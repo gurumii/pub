@@ -1,1 +1,216 @@
-11
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="stylesheet" href="./dreams.css">
+  <script src="/js/jquery-3.3.1.min.js"></script>
+  <title>canvas</title>
+  <style>
+  .content{ width: 100%; height: 100%; }
+    .canvas-wrap{ width: 100%; height: 100%; padding-top: 200px; padding-left: 50%; margin-left:-300px; }
+    #canvas{width: 600px; height: 400px; background: #f7f7f7; border: 1px solid red;  }
+  </style>
+</head>
+<body>
+
+  <div class="wrap">
+    <div class="header">
+    </div>
+    <div class="content">
+      <div class="canvas-wrap">
+        <canvas id="canvas"></canvas>
+        <div class="buttons">
+          <label for="colors"> 컬러값 지정 </label><input type="text" value="ffcc00" id="colors">
+          <button id="rect" onclick="com(this)">rect</button>
+          <button id="line" onclick="com(this)">line</button>
+          <button id="arc" onclick="com(this)">arc</button>
+          <button id="image" onclick="com(this)">arc</button>
+          <button id="pattern" onclick="com(this)">arc</button>
+          <button id="line-cap" onclick="com(this)">선의 모양</button>
+          <button id="line-join-type" onclick="com(this)">선의 연결 모양</button>
+          <button id="scale-rotate-translate" onclick="com(this)">scale, rotate, translate</button>
+          <button id="text" onclick="com(this)">text</button>
+        </div>
+      </div>
+    </div>
+    <footer>
+    </footer>
+  </div>
+
+
+  <script>
+    var can = document.getElementById("canvas"); // canvas DOM 객체 생성
+    var ctx = can.getContext("2d"); // 컨텍스트 생성
+    var canWidth = can.width;
+    var canHeight = can.height;
+    var color = 'ffcc00'
+
+
+    var drawRect = function () {
+      ctx.clearRect(0, 0, canWidth, canHeight);
+      ctx.fillStyle = "#"+color;
+      var width = 200;
+      var height = 100;
+      ctx.fillRect((canWidth/2)-(width/2), (canHeight/2)-(height/2), width, height);
+    };
+
+    var drawLine = function () {
+      ctx.clearRect(0, 0, canWidth, canHeight);
+      var width = 100;
+      var height = 100;
+      var begin = {x: 40, y: 20};
+
+      ctx.beginPath();
+      ctx.moveTo(begin.x, begin.y);
+      ctx.lineTo(begin.x+width, begin.y);
+      ctx.lineTo(begin.x+width, begin.y+height);
+      ctx.lineTo(begin.x, begin.y+height);
+      ctx.lineTo(begin.x, begin.y);
+      ctx.stroke();
+      ctx.closePath();
+
+
+      begin = {x: 170, y: 20};
+      ctx.fillStyle = '#'+color;
+      ctx.beginPath();
+      ctx.moveTo(begin.x, begin.y);
+      ctx.lineTo(begin.x+width, begin.y);
+      ctx.lineTo(begin.x+width, begin.y+height);
+      ctx.lineTo(begin.x, begin.y+height);
+      ctx.lineTo(begin.x, begin.y);
+      ctx.fill();
+      ctx.closePath();
+    };
+
+    var drawArc = function () {
+      ctx.clearRect(0, 0, canWidth, canHeight);
+      var width = 100;
+      var height = 100;
+      var begin = {x: 40, y: 20};
+
+      var startAngle = (Math.PI/180)*0;
+      var endAngle = (Math.PI/180)*270;
+
+      /*ctx.translate(canWidth/2, canHeight/2);
+      ctx.rotate((Math.PI/180)*);
+      ctx.arc(0, 0, width/2, startAngle, endAngle);*/
+
+      ctx.arc((canWidth/2), (canHeight/2), width/2, startAngle, endAngle);
+      ctx.stroke();
+    };
+
+    var drawImage = function () {
+      ctx.clearRect(0, 0, canWidth, canHeight);
+      var image = new Image();
+      image.src= '/images/googlelogo_color_272x92dp.png';
+      image.onload = function () {
+        ctx.drawImage(image, 0, 0, image.width/2, image.height/2);
+      };
+    };
+
+    var drawPattern = function () {
+      ctx.clearRect(0, 0, canWidth, canHeight);
+      var image = new Image();
+      image.src= '/images/googlelogo_color_272x92dp.png';
+      image.onload = function () {
+        var pattern = ctx.createPattern(image, 'repeat');
+        ctx.fillStyle = pattern;
+        ctx.globalAlpha = 0.5;      //opacity
+        ctx.fillRect(0, 0, canWidth, canHeight);
+      };
+    };
+
+    var lineCap = function () {
+      ctx.clearRect(0, 0, canWidth, canHeight);
+
+    	var capType = ['butt','round','square'];
+    	ctx.strokeStyle='black';
+    	for(var i=0;i<capType.length;i++){
+    		ctx.lineWidth=20;
+    		ctx.lineCap=capType[i];
+    		ctx.beginPath();
+    		ctx.moveTo(50, 25+i*50);
+    		ctx.lineTo(250, 25+i*50);
+    		ctx.stroke();
+    	}
+    };
+
+    var lineJoinType = function () {
+      ctx.clearRect(0, 0, canWidth, canHeight);
+
+     	var joinType=['bevel','round','miter'];
+     	ctx.strokeStyle='black';
+     	for(var i=0;i<joinType.length;i++){
+     		ctx.lineJoin = joinType[i];
+     		ctx.lineWidth = 20;
+     		ctx.beginPath();
+     		ctx.moveTo(25, 5+i*50);
+     		ctx.lineTo(35, 35+i*50);
+     		ctx.lineTo(75, 10+i*50);
+     		ctx.lineTo(115, 35+i*50);
+     		ctx.lineTo(155, 5+i*50);
+     		ctx.stroke();
+     	}
+    };
+
+    var drawText = function () {
+      ctx.clearRect(0, 0, canWidth, canHeight);
+
+      var text = 'test Text';
+    	ctx.font = '20px san-serif';
+    	ctx.textAlign = 'center';
+    	ctx.textBaseline = 'middle';
+    	ctx.strokeStyle = "#ff0000";
+
+    	ctx.fillText(text, 100, 50, ctx.measureText(text).width);
+    };
+
+    var scaleRotateTranslate = function () {
+      ctx.clearRect(0, 0, canWidth, canHeight);
+
+    	ctx.scale(1.5, 1.5);
+    	ctx.translate(30, -10);
+      ctx.rotate((Math.PI/180)*30);
+    	ctx.fillRect(10, 10, 50, 50); // 먼저 그려보고 나서 위의 사항들을 하나씩 적용
+    }();
+
+
+    var com = function (obj) {
+      var id = obj.id;
+      switch(id){
+        case 'rect':
+          drawRect();
+        break;
+        case 'line':
+          drawLine();
+        break;
+        case 'arc':
+          drawArc();
+        break;
+        case 'image':
+          drawImage();
+        break;
+        case 'pattern':
+          drawPattern();
+        break;
+        case 'line-cap':
+          lineCap();
+        break;
+        case 'line-join-type':
+          lineJoinType();
+        break;
+        case 'text':
+          drawText();
+        break;
+        case 'scale-rotate-translate':
+          scaleRotateTranslate();
+        break;
+      }
+    }
+
+
+
+  </script>
+</body>
+</html>
