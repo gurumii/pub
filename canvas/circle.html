@@ -46,9 +46,19 @@
     var canHeight = can.height;
     var color = 'ffcc00'
 
+    ctx.save();
+
+    var clearAll = function () {
+      ctx.clearRect(0, 0, canWidth, canHeight);
+      ctx.restore();
+    };
 
     var drawRect = function () {
-      ctx.clearRect(0, 0, canWidth, canHeight);
+      clearAll();
+
+      ctx.scale(0.5, 0.5);
+    	ctx.translate(0, 0);
+      ctx.rotate((Math.PI/180)*0);
 
       ctx.fillStyle = "#"+color;
       var width = 200;
@@ -57,7 +67,8 @@
     };
 
     var drawLine = function () {
-      ctx.clearRect(0, 0, canWidth, canHeight);
+      clearAll();
+
       var width = 100;
       var height = 100;
       var begin = {x: 40, y: 20};
@@ -85,7 +96,7 @@
     };
 
     var drawArc = function () {
-      ctx.clearRect(0, 0, canWidth, canHeight);
+      clearAll();
       var width = 100;
       var height = 100;
       var begin = {x: 40, y: 20};
@@ -102,7 +113,7 @@
     };
 
     var drawImage = function () {
-      ctx.clearRect(0, 0, canWidth, canHeight);
+      clearAll();
       var image = new Image();
       image.src= '/canvas/images/googlelogo_color_272x92dp.png';
       image.onload = function () {
@@ -111,7 +122,7 @@
     };
 
     var drawPattern = function () {
-      ctx.clearRect(0, 0, canWidth, canHeight);
+      clearAll();
       var image = new Image();
       image.src= '/canvas/images/googlelogo_color_272x92dp.png';
       image.onload = function () {
@@ -123,7 +134,7 @@
     };
 
     var lineCap = function () {
-      ctx.clearRect(0, 0, canWidth, canHeight);
+      clearAll();
 
     	var capType = ['butt','round','square'];
     	ctx.strokeStyle='black';
@@ -138,7 +149,7 @@
     };
 
     var lineJoinType = function () {
-      ctx.clearRect(0, 0, canWidth, canHeight);
+      clearAll();
 
      	var joinType=['bevel','round','miter'];
      	ctx.strokeStyle='black';
@@ -156,7 +167,7 @@
     };
 
     var drawText = function () {
-      ctx.clearRect(0, 0, canWidth, canHeight);
+      clearAll();
 
       var text = 'test Text';
     	ctx.font = '20px san-serif';
@@ -168,7 +179,7 @@
     };
 
     var scaleRotateTranslate = function () {
-      ctx.clearRect(0, 0, canWidth, canHeight);
+      clearAll();
 
     	ctx.scale(1.5, 1.5);
     	ctx.translate(30, -10);
