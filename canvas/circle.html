@@ -49,6 +49,7 @@
 
     var drawRect = function () {
       ctx.clearRect(0, 0, canWidth, canHeight);
+
       ctx.fillStyle = "#"+color;
       var width = 200;
       var height = 100;
@@ -103,7 +104,7 @@
     var drawImage = function () {
       ctx.clearRect(0, 0, canWidth, canHeight);
       var image = new Image();
-      image.src= '/images/googlelogo_color_272x92dp.png';
+      image.src= '/canvas/images/googlelogo_color_272x92dp.png';
       image.onload = function () {
         ctx.drawImage(image, 0, 0, image.width/2, image.height/2);
       };
@@ -112,7 +113,7 @@
     var drawPattern = function () {
       ctx.clearRect(0, 0, canWidth, canHeight);
       var image = new Image();
-      image.src= '/images/googlelogo_color_272x92dp.png';
+      image.src= '/canvas/images/googlelogo_color_272x92dp.png';
       image.onload = function () {
         var pattern = ctx.createPattern(image, 'repeat');
         ctx.fillStyle = pattern;
