@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>canvas 도넛 모양 그래프 만들기 예제(IE대응 - excanvas.js 사용)</title>
+<script type="text/javascript" src="js/excanvas.js"></script>
+
+<script type="text/javascript">
+if (window.attachEvent) {
+	window.attachEvent('onload',eventWindowLoaded);
+} else {
+	window.addEventListener('load',eventWindowLoaded,false);
+}
+
+
+// 데이터
+var myObject = [
+	{
+		name: "사과",
+		value: "25"
+	},
+	{
+		name: "배",
+		value: "30"
+	},
+	{
+		name: "딸기",
+		value: "80"
+	},
+	{
+		name: "감자",
+		value: "50"
+	},
+	{
+		name: "고구마",
+		value: "60"
+	}
+	,
+	{
+		name: "참외",
+		value: "30"
+	}
+];
+
+
+
+
+
+function eventWindowLoaded() {
+	graphApp(250,250,150,80,'#5dbb5a', 'bold 20px san-serif', '#F00');
+	// 중심좌표 x축, 중심좌표 y축, 반지름, 삭제할영역 반지름, 구분선 색상, 폰트설정, 폰트색상
+}
+
+function graphApp(objCenterX,objCenterY,objRadius,delRadius,divColor,fontSet,fontColor){
+	var theCanvas = document.getElementById('canvas');
+  	var context = theCanvas.getContext('2d');
+
+	// 각도와 반지름을 알고 있을때 x, y좌표값 얻기
+
+	function drawArc(num,prevRadius,nowRadius,divColor){
+
+
+		// 부채꼴 그리기
+		var image = new Image();
+
+		image.onload = function(){
+			var pattern = context.createPattern(image,"repeat");
+			context.beginPath();
+			context.fillStyle = pattern;
+			context.moveTo(objCenterX,objCenterY);
+			context.arc(objCenterX,objCenterY,objRadius,(Math.PI/180)*prevRadius,(Math.PI/180)*nowRadius,false);
+			context.lineTo(objCenterX,objCenterY);
+			context.closePath();
+			context.fill();
+
+			// 구분선 그리기
+			context.beginPath();
+			context.strokeStyle = divColor;
+			context.moveTo(objCenterX,objCenterY);
+			context.arc(objCenterX,objCenterY,objRadius,(Math.PI/180)*prevRadius,(Math.PI/180)*nowRadius,false);
+			context.lineTo(objCenterX,objCenterY);
+			context.closePath();
+			context.stroke();
+
+			// 이미지 덮기
+			context.beginPath();
+			context.fillStyle="#fff";
+			context.moveTo(objCenterX,objCenterY);
+			context.arc(objCenterX,objCenterY,delRadius,0,Math.PI*2,false);
+			context.lineTo(objCenterX,objCenterY);
+			context.closePath();
+			context.fill();
+
+			// 덮은 이미지 선
+			context.beginPath();
+			context.strokeStyle = divColor;
+			context.arc(objCenterX,objCenterY,delRadius,0,Math.PI*2,false);
+			context.closePath();
+			context.stroke();
+
+		}
+		image.src = "./images/bg_pt"+(num+1)+".gif";
+	}
+
+	// 텍스트 삽입
+	function drawText(nameValue,fontSet,fontColor){
+		context.font = fontSet;
+		context.textBaseline = 'middle';
+		context.strokeStyle = fontColor;
+
+		var distanceX = distanceY = 0;
+		if((nowRadius+prevRadius)/2 < 90){
+			distanceX = 10;
+			distanceY = 10;
+			context.textAlign = 'left';
+		} else if ((nowRadius+prevRadius)/2 < 180){
+			distanceX = -10;
+			distanceY = 10;
+			context.textAlign = 'right';
+		} else if ((nowRadius+prevRadius)/2 < 270){
+			distanceX = -10;
+			distanceY = -10;
+			context.textAlign = 'right';
+		} else {
+			distanceX = 10;
+			distanceY = -10;
+			context.textAlign = 'left';
+		}
+
+		context.fillText(
+			nameValue,
+			objCenterX + (Math.cos((Math.PI/180)*(nowRadius+prevRadius)/2))*objRadius + distanceX,
+			objCenterY + (Math.sin((Math.PI/180)*(nowRadius+prevRadius)/2))*objRadius + distanceY
+		);
+	}
+
+	var totalValue = 0;
+	for(i=0;i<myObject.length;i++){
+		totalValue += parseInt(myObject[i].value);
+	}
+
+	var nowRadius = prevRadius = increaseValue = 0
+	for(i=0;i<myObject.length;i++){
+		increaseValue += parseInt(myObject[i].value);
+		var radius = parseInt(increaseValue/totalValue * 360);
+		var nameValue = myObject[i].name;
+		prevRadius = nowRadius;
+		nowRadius = radius;
+		drawArc(i,prevRadius,nowRadius,divColor);
+		drawText(nameValue,fontSet,fontColor);
+	}
+}
+</script>
+
+<style>
+canvas {border: 3px solid red;}
+</style>
+</head>
+<body>
+	<h1>canvas 도넛 모양 그래프 만들기 예제(IE대응 - excanvas.js 사용)</h1>
+	<div class="text">
+		<p>IE8을 위해 excanvas.js를 사용해봤지만, fillText, createPattern 을 제대로 지원하지 않는것 같다. 검색을 했지만, <a href="https://github.com/aFarkas/webshim/issues/30" target="_blank">Canvas createPattern() error on IE 8 #30</a>, <a href="https://code.google.com/p/explorercanvas/issues/detail?id=107" target="_blank">Issue 107:	Canvas fillStyle in IE</a>이런 내용들만...</p>
+		<p>그리고 이미지 pattern을 한 곳과 면을 globalCompositeOperation = "xor"을 했는데, 겹치는 영역이 표시가 되지 않아야 하지만, 희미하게 패턴이 반복되는 배경의 잔상이 남아서 흰색 원으로 덮음.</p>
+		<p><a href="Index.html">JS 예제 만들기.(시작페이지)로 돌아가기</a></p>
+	</div>
+
+	<canvas id="canvas" width="500" height="500"></canvas>
+</body>
+</html>

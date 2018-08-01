@@ -19,14 +19,14 @@
     </div>
     <div class="content">
       <div class="canvas-wrap">
-        <canvas id="canvas"></canvas>
+        <canvas id="canvas" width="600" height="400"></canvas>
         <div class="buttons">
           <label for="colors"> 컬러값 지정 </label><input type="text" value="ffcc00" id="colors">
           <button id="rect" onclick="com(this)">rect</button>
           <button id="line" onclick="com(this)">line</button>
           <button id="arc" onclick="com(this)">arc</button>
-          <button id="image" onclick="com(this)">arc</button>
-          <button id="pattern" onclick="com(this)">arc</button>
+          <button id="image" onclick="com(this)">image</button>
+          <button id="pattern" onclick="com(this)">pattern</button>
           <button id="line-cap" onclick="com(this)">선의 모양</button>
           <button id="line-join-type" onclick="com(this)">선의 연결 모양</button>
           <button id="scale-rotate-translate" onclick="com(this)">scale, rotate, translate</button>
@@ -46,19 +46,14 @@
     var canHeight = can.height;
     var color = 'ffcc00'
 
-    ctx.save();
-
     var clearAll = function () {
       ctx.clearRect(0, 0, canWidth, canHeight);
       ctx.restore();
+      ctx.save();
     };
 
     var drawRect = function () {
       clearAll();
-
-      ctx.scale(0.5, 0.5);
-    	ctx.translate(0, 0);
-      ctx.rotate((Math.PI/180)*0);
 
       ctx.fillStyle = "#"+color;
       var width = 200;
@@ -107,7 +102,7 @@
       /*ctx.translate(canWidth/2, canHeight/2);
       ctx.rotate((Math.PI/180)*);
       ctx.arc(0, 0, width/2, startAngle, endAngle);*/
-
+      ctx.beginPath();
       ctx.arc((canWidth/2), (canHeight/2), width/2, startAngle, endAngle);
       ctx.stroke();
     };

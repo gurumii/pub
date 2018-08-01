@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="stylesheet" href="./dreams.css">
+  <script src="/js/jquery-3.3.1.min.js"></script>
+  <title>canvas</title>
+  <style>
+  .content{ width: 100%; height: 100%; }
+    .canvas-wrap{ width: 100%; height: 100%; padding-top: 200px; padding-left: 50%; margin-left:-300px; }
+    #canvas{width: 600px; height: 400px; background: #f7f7f7; border: 1px solid red;  }
+  </style>
+</head>
+<body>
+
+  <div class="wrap">
+    <div class="header">
+    </div>
+    <div class="content">
+      <div class="canvas-wrap">
+        <!-- <canvas id="canvas"></canvas> -->
+        <canvas id="canvas" width="600" height="400"></canvas>
+      </div>
+    </div>
+    <footer>
+    </footer>
+  </div>
+
+  <script>
+    var data = [
+      {name: '연필', value: "3", color: '#e1e1e1'},
+      {name: '만년펜', value: "10", color: 'brown'},
+      {name: '만년펜', value: "50", color: 'green'},
+      {name: '만년펜', value: "10", color: 'orange'},
+      {name: '만년펜', value: "90", color: 'gold'},
+      {name: '만년펜', value: "20", color: 'blue'},
+      {name: '만년펜', value: "70", color: '#757575'}
+    ]
+  </script>
+
+  <script>
+    var can = document.getElementById("canvas"); // canvas DOM 객체 생성
+    var ctx = can.getContext("2d"); // 컨텍스트 생성
+    var canWidth = can.width;
+    var canHeight = can.height;
+    var padding = 80;
+
+    var baseLine = function () {
+      ctx.beginPath();
+      ctx.moveTo(padding, padding);
+      ctx.lineTo(padding, canHeight-padding);
+      ctx.lineTo(canWidth-padding, canHeight-padding);
+      ctx.stroke();
+      ctx.closePath();
+    }
+
+    var backLine = function () {
+      var width = canWidth - (padding);
+      var height = canHeight - (padding*2);
+
+      var termX = parseInt(width / data.length, 10);
+      var termY = parseInt(height / 10, 10)
+      ctx.save();
+      ctx.beginPath();
+      ctx.setLineDash([5, 15]);
+
+      var posX = 0, posY = 0;
+      for(var x=0 ; x<data.length ; x++){
+        ctx.moveTo(padding+posX, padding);
+        ctx.lineTo(padding+posX, canHeight-padding);
+        posX += termX;
+      }
+      for(var x=0 ; x<10 ; x++){
+        ctx.moveTo(padding, posY+padding);
+        ctx.lineTo(canWidth-padding, posY+padding);
+        posY += termY;
+      }
+      ctx.stroke()
+      ctx.closePath();
+    }
+
+    var addDot = function () {
+      ctx.restore();
+
+
+      var width = canWidth - (padding);
+      var height = canHeight - (padding*2);
+      var posX = 0, posY = 0;
+      var termX = parseInt(width / data.length, 10);
+      var termY = parseInt(height / 10, 10)
+
+      var beforeX = 0, beforeY = 0;
+
+      for(var x=0 ; x<data.length ; x++){
+        var value = parseInt(data[x].value, termY);
+        posY = (height+padding)-(value);
+        ctx.beginPath();
+        ctx.arc(padding+posX, posY, 4, (Math.PI/180)*0, (Math.PI/180)*360);
+        ctx.fill();
+        ctx.closePath();
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(padding+posX, beforeY);
+        ctx.lineTo(padding+posX, posY);
+        ctx.closePath();
+        ctx.stroke();
+
+        posX += termX;
+
+      }
+
+
+    }
+
+    baseLine();
+    backLine();
+    addDot();
+
+  </script>
+</body>
+</html>
