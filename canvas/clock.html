@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="stylesheet" href="./dreams.css">
+  <script src="/js/jquery-3.3.1.min.js"></script>
+  <title>canvas</title>
+  <style>
+  .content{ width: 100%; height: 100%; }
+    .canvas-wrap{ width: 100%; height: 100%; padding-top: 200px; padding-left: 50%; margin-left:-300px; }
+    #canvas{width: 600px; height: 400px; background: #f7f7f7; border: 1px solid red;  }
+  </style>
+</head>
+<body>
+
+  <div class="wrap">
+    <div class="header">
+    </div>
+    <div class="content">
+      <div class="canvas-wrap">
+        <!-- <canvas id="canvas"></canvas> -->
+        <canvas id="canvas" width="600" height="400"></canvas>
+      </div>
+    </div>
+    <footer>
+    </footer>
+  </div>
+
+  <script>
+    var can = document.getElementById("canvas"); // canvas DOM 객체 생성
+    var ctx = can.getContext("2d"); // 컨텍스트 생성
+    var canWidth = can.width;
+    var canHeight = can.height;
+    var centerX = canWidth/2;
+    var centerY = canHeight/2;
+    var PADDING = 80;
+    var TIME = "3:59:5".split(':');
+
+    //ctx.translate(ctx.measureText('100').width, 0); //왼쪽텍스트 추가로 인해 가운데로 위치 재조절
+    
+    var baseLine = function () {
+      ctx.clearRect(0, 0, canWidth, canHeight);
+      ctx.lineWidth = 6;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, (canHeight-PADDING)/2, (Math.PI/180)*0, (Math.PI/180)*360);
+      ctx.stroke();
+      ctx.closePath();
+    }
+
+    var drawTime = function () {      
+      var hours = ((Math.PI/180)*270);
+      hours += ((Math.PI/180)*(parseInt(TIME[0]*5, 10)*6));
+
+      var minutes = ((Math.PI/180)*270);
+      minutes += ((Math.PI/180)*(parseInt(TIME[1], 10)*6));
+
+      var seconds = ((Math.PI/180)*270);
+      seconds += ((Math.PI/180)*(parseInt(TIME[2], 10)*6));
+
+      ctx.beginPath();
+      ctx.moveTo(centerX, centerY);
+      ctx.arc(centerX, centerY, ((canHeight-PADDING)/2)-80, hours, hours);
+      ctx.stroke();
+      ctx.closePath();
+
+      ctx.beginPath();
+      ctx.moveTo(centerX, centerY);
+      ctx.arc(centerX, centerY, ((canHeight-PADDING)/2)-40, minutes, minutes);
+      ctx.stroke();
+      ctx.closePath();
+
+      ctx.beginPath();
+      ctx.moveTo(centerX, centerY);
+      ctx.arc(centerX, centerY, ((canHeight-PADDING)/2)-10, seconds, seconds);
+      ctx.stroke();
+    }
+
+    var drawText = function () {
+      var distanceX = 0;
+      var distanceY = 0;
+      var radius = ((canHeight-PADDING)/2)/1.2;
+
+      //var temp = ((Math.PI/180)*270);
+      //temp += (Math.PI/180)*0;
+      //temp += (Math.PI/180)*90;
+      //temp += (Math.PI/180)*180;
+      //temp += (Math.PI/180)*270;
+      
+      ctx.beginPath();
+
+      ctx.font = '16px san-serif';
+      ctx.moveTo(centerX, centerY);
+
+      for(var x=0 ; x<12 ; x++){
+        var temp = ((Math.PI/180)*270);
+        temp += (Math.PI/180)*(x*(60/2));
+        var deg = Math.floor(x/3);
+
+        ctx.textBaseline = 'middle';
+        ctx.textalign = 'left';
+
+
+        if(deg==0){
+          distanceX = 6;
+          distanceY = 6;
+          ctx.textAlign = 'left';
+        }else if(deg==1){
+          distanceX = -6;
+          distanceY = 6;
+          ctx.textAlign = 'right';
+        }else if(deg==2){
+          distanceX = -6;
+          distanceY = -6;
+          ctx.textAlign = 'right';
+        }else{
+          distanceX = 6;
+          distanceY = -6;
+          ctx.textAlign = 'left';
+        }
+
+        /*if((nowRadius+prevRadius)/2 < 90){
+          distanceX = 5;
+          distanceY = 5;
+          ctx.textAlign = 'left';
+        } else if ((nowRadius+prevRadius)/2 < 180){
+          distanceX = -5;
+          distanceY = 5;
+          ctx.textAlign = 'right';
+        } else if ((nowRadius+prevRadius)/2 < 270){
+          distanceX = -5;
+          distanceY = -5;
+          ctx.textAlign = 'right';
+        } else {
+          distanceX = 5;
+          distanceY = -5;
+          ctx.textAlign = 'left';
+        }*/
+
+        var _centerX = (centerX+distanceX) + ((Math.cos(temp))*radius);
+        var _centerY = (centerY+distanceY) + ((Math.sin(temp))*radius);
+        ctx.fillText(
+          x,
+          _centerX,
+          _centerY,
+          ctx.measureText(x).width
+        );
+      }
+    }
+
+    var run = function () {
+      TIME = new Date();
+      TIME = (TIME.getHours()+':'+TIME.getMinutes()+':'+TIME.getSeconds()).split(':');
+      baseLine();  
+      drawTime();
+      drawText();
+    }
+    run();
+    
+    /*var timer = setInterval(function () {
+      run();
+    }, 500);//*/
+
+  </script>
+</body>
+</html>
