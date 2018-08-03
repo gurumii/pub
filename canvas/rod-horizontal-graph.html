@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="stylesheet" href="./dreams.css">
+  <script src="/js/jquery-3.3.1.min.js"></script>
+  <title>canvas</title>
+  <style>
+  .content{ width: 100%; height: 100%; }
+    .canvas-wrap{ width: 100%; height: 100%; padding-top: 200px; padding-left: 50%; margin-left:-300px; }
+    #canvas{width: 600px; height: 400px; background: #f7f7f7; border: 1px solid red;  }
+  </style>
+</head>
+<body>
+
+  <div class="wrap">
+    <div class="header">
+    </div>
+    <div class="content">
+      <div class="canvas-wrap">
+        <!-- <canvas id="canvas"></canvas> -->
+        <canvas id="canvas" width="600" height="400"></canvas>
+      </div>
+    </div>
+    <footer>
+    </footer>
+  </div>
+
+  <script>
+    var data = [
+      {name: '연필', value: "3", color: '#ff0000'},
+      {name: '만년펜', value: "10", color: 'brown'},
+      {name: '만년펜', value: "70", color: 'green'},
+      {name: '만년펜', value: "99", color: 'orange'},
+      {name: '만년펜', value: "100", color: 'gold'}
+    ]
+  </script>
+
+  <script>
+    var can = document.getElementById("canvas"); // canvas DOM 객체 생성
+    var ctx = can.getContext("2d"); // 컨텍스트 생성
+    var canWidth = can.width;
+    var canHeight = can.height;
+    var PADDING = 80;
+    var HORIZONTAL_TERM = 10;
+
+
+    ctx.translate(ctx.measureText('100').width, 0); //왼쪽텍스트 추가로 인해 가운데로 위치 재조절
+    ctx.font = '16px san-serif';
+    ctx.textAlign = 'center';
+
+    var baseLine = function () {
+      ctx.beginPath();
+      ctx.moveTo(PADDING, PADDING);
+      ctx.lineTo(PADDING, canHeight-PADDING);
+      ctx.lineTo(canWidth-PADDING, canHeight-PADDING);
+      ctx.stroke();
+      ctx.closePath();
+    }
+
+    var backLine = function () {
+      var width = canWidth - (PADDING*2);
+      var height = canHeight - (PADDING*2);
+
+      
+      var termX = parseInt(width / HORIZONTAL_TERM, 10);
+      var termY = parseInt(height / (data.length+1), 10);
+      ctx.save();
+      ctx.beginPath();
+      ctx.setLineDash([5, 5]);
+
+      var posX = 0, posY = 0;
+      //가로축
+      for(var x=0 ; x<HORIZONTAL_TERM+1 ; x++){
+        ctx.moveTo(PADDING+posX, PADDING);
+        ctx.lineTo(PADDING+posX, canHeight-PADDING);
+
+        ctx.fillText(x*10, (PADDING+posX), canHeight-(PADDING/1.5), ctx.measureText('100').width);
+
+        posX += termX;
+      }
+      
+      //세로축
+      for(var x=0 ; x<data.length+1 ; x++){
+        ctx.moveTo(PADDING, posY+PADDING);
+        ctx.lineTo(canWidth-PADDING, posY+PADDING);
+
+        if(x<data.length){
+          ctx.fillText(data[x].name, (PADDING/1.8), (posY+termY+PADDING)+8, ctx.measureText(data[x].name).width);
+        }
+
+        posY += termY;
+      }
+      ctx.stroke()
+      ctx.closePath();
+    }        
+
+
+    var horizontalRod = function () {
+      var width = canWidth - (PADDING*2);
+      var height = canHeight - (PADDING*2);
+      var posX = 0, posY = 0;
+      var termY = parseInt(height / (data.length+1), 10);
+      var termX = parseInt(width / 10, 10);
+      var rodWidth = 0;
+      var ROD_HEIGHT = 20;
+
+      for(var x=0 ; x<data.length ; x++){
+        var value = parseInt(data[x].value, 10);
+        value *= termX/HORIZONTAL_TERM;
+        posX = (width+PADDING)-(value);
+        rodWidth = (canWidth-PADDING)-posX;
+
+        var positionY = (PADDING+posY+termY)-(ROD_HEIGHT/2);
+        ctx.restore();
+
+        ctx.beginPath();
+        ctx.fillStyle = data[x].color;
+        ctx.fillRect(PADDING, positionY, rodWidth, ROD_HEIGHT);
+        ctx.fill();
+        ctx.closePath();
+        ctx.stroke();
+
+        ctx.save();
+
+        ctx.font = '600 16px san-serif';
+        ctx.fillStyle = '#000';
+        ctx.shadowOffsetX = 3;
+        ctx.shadowOffsetY = 3;
+        ctx.shadowColor = "rgba(0,0,0,0.3)";
+        ctx.shadowBlur = 4;
+        ctx.fillText(data[x].value, rodWidth+PADDING+ROD_HEIGHT, (posY+termY+PADDING)+(ROD_HEIGHT/4), ctx.measureText(data[x].name).width);
+        
+        posY += termY;
+      }
+    }
+    
+    baseLine();
+    backLine();
+    horizontalRod();
+
+  </script>
+</body>
+</html>

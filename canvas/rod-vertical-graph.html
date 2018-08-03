@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="stylesheet" href="./dreams.css">
+  <script src="/js/jquery-3.3.1.min.js"></script>
+  <title>canvas</title>
+  <style>
+  .content{ width: 100%; height: 100%; }
+    .canvas-wrap{ width: 100%; height: 100%; padding-top: 200px; padding-left: 50%; margin-left:-300px; }
+    #canvas{width: 600px; height: 400px; background: #f7f7f7; border: 1px solid red;  }
+  </style>
+</head>
+<body>
+
+  <div class="wrap">
+    <div class="header">
+    </div>
+    <div class="content">
+      <div class="canvas-wrap">
+        <!-- <canvas id="canvas"></canvas> -->
+        <canvas id="canvas" width="600" height="400"></canvas>
+      </div>
+    </div>
+    <footer>
+    </footer>
+  </div>
+
+  <script>
+    var data = [
+      {name: '연필', value: "3", color: '#ff0000'},
+      {name: '만년펜', value: "10", color: 'brown'},
+      {name: '만년펜', value: "70", color: 'green'},
+      {name: '만년펜', value: "99", color: 'orange'},
+      {name: '만년펜', value: "100", color: 'gold'}
+    ]
+  </script>
+
+  <script>
+    var can = document.getElementById("canvas"); // canvas DOM 객체 생성
+    var ctx = can.getContext("2d"); // 컨텍스트 생성
+    var canWidth = can.width;
+    var canHeight = can.height;
+    var PADDING = 80;
+    var VERTICAL_TERM = 10;
+
+
+    ctx.translate(ctx.measureText('100').width, 0); //왼쪽텍스트 추가로 인해 가운데로 위치 재조절
+    
+    var baseLine = function () {
+      ctx.beginPath();
+      ctx.moveTo(PADDING, PADDING);
+      ctx.lineTo(PADDING, canHeight-PADDING);
+      ctx.lineTo(canWidth-PADDING, canHeight-PADDING);
+      ctx.stroke();
+      ctx.closePath();
+    }
+
+    var backLine = function () {
+      var width = canWidth - (PADDING*2);
+      var height = canHeight - (PADDING*2);
+
+      var termX = parseInt(width / (data.length+1), 10);
+      var termY = parseInt(height / VERTICAL_TERM, 10)
+      ctx.save();
+      ctx.beginPath();
+      ctx.setLineDash([5, 5]);
+
+      var posX = 0, posY = 0;
+      //가로축
+      for(var x=0 ; x<data.length+2 ; x++){
+        if(x>0){
+          ctx.moveTo(PADDING+posX, PADDING);
+          ctx.lineTo(PADDING+posX, canHeight-PADDING);
+        }
+
+        ctx.font = '16px san-serif';
+        ctx.textAlign = 'center';
+
+        posX += termX;
+      }
+      
+      //세로축
+      for(var x=0 ; x<VERTICAL_TERM+1 ; x++){
+        if(x<10){
+          ctx.moveTo(PADDING, posY+PADDING);
+          ctx.lineTo(canWidth-PADDING, posY+PADDING);
+        }
+
+        ctx.font = '16px san-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText((VERTICAL_TERM*10)-(x*10), (PADDING/1.4), (posY+PADDING)+8, ctx.measureText('100').width);
+
+        posY += termY;
+      }
+      ctx.stroke()
+      ctx.closePath();
+    }        
+
+
+    var verticalRod = function () {
+      ctx.restore();
+      var width = canWidth - (PADDING*2);
+      var height = canHeight - (PADDING*2);
+      var posX = 0, posY = 0;
+      var termX = parseInt(width / (data.length+1), 10);
+      var termY = parseInt(height / 10, 10);
+      var rodWidth = 20;
+      var ROD_HEIGHT = 0;
+
+      for(var x=0 ; x<data.length ; x++){
+        var value = parseInt(data[x].value, 10);
+        value *= termY/VERTICAL_TERM;
+        posY = (height+PADDING)-(value);
+        ROD_HEIGHT = (canHeight-PADDING)-posY;
+
+        
+        var positionX = (PADDING+posX+termX)-(rodWidth/2);
+        ctx.restore();
+        
+        ctx.beginPath();
+        ctx.fillStyle = data[x].color;
+        ctx.fillRect(positionX, posY, rodWidth, ROD_HEIGHT);
+        
+        ctx.fill();
+        ctx.closePath();
+        ctx.stroke();
+
+        ctx.save();
+        
+        ctx.font = '16px san-serif';
+        ctx.textAlign = 'center';
+        ctx.fillStyle = '#000';
+        var text = data[x].name;
+        ctx.fillText(text, (PADDING+posX+termX), (canHeight-(PADDING/1.4)), ctx.measureText(text).width);
+        
+
+        ctx.font = '600 16px san-serif';
+        ctx.fillStyle = '#000';
+        ctx.shadowOffsetX = 3;
+        ctx.shadowOffsetY = 3;
+        ctx.shadowColor = "rgba(0,0,0,0.3)";
+        ctx.shadowBlur = 4;
+        ctx.fillText(data[x].value, (PADDING+posX+termX), posY-10, ctx.measureText(text).width);
+        
+        posX += termX;
+      }
+    }
+    
+    baseLine();
+    backLine();
+    verticalRod();
+
+  </script>
+</body>
+</html>
