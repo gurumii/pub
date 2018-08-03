@@ -46,18 +46,10 @@
     var canHeight = can.height;
     var color = 'ffcc00'
 
-    // ctx.save();
-    // ctx.translate(canWidth/2, canHeight/2);
-    // var rotate = (Math.PI/180)*180;
-    // ctx.rotate(rotate);
-
     var drawArc = function (color, prevRadius, nowRadius) {
       ctx.beginPath();
       ctx.moveTo(canWidth/2, canHeight/2);
       ctx.arc(canWidth/2, canHeight/2, canHeight/3, (Math.PI/180)*prevRadius, (Math.PI/180)*nowRadius);
-
-      // ctx.moveTo(0, 0);
-      // ctx.arc(0, 0, canHeight/3, (Math.PI/180)*prevRadius, (Math.PI/180)*nowRadius);
 
       ctx.fillStyle = color;
       ctx.fill();
@@ -79,8 +71,6 @@
       ctx.textBaseline = 'middle';
       ctx.textalign = 'center';
       ctx.fillStyle = '#000';
-
-      console.log((nowRadius+prevRadius)/2, text);
 
       if((nowRadius+prevRadius)/2 < 90){
   			distanceX = 5;
