@@ -52,6 +52,8 @@
     var drawTime = function () {      
       var hours = ((Math.PI/180)*270);
       hours += ((Math.PI/180)*(parseInt(TIME[0]*5, 10)*6));
+      hours += (parseInt(TIME[1], 10)/60)/2;
+      //hours += 0.5;
 
       var minutes = ((Math.PI/180)*270);
       minutes += ((Math.PI/180)*(parseInt(TIME[1], 10)*6));
