@@ -76,6 +76,12 @@
           ctx.moveTo(padding+posX, padding);
           ctx.lineTo(padding+posX, canHeight-padding);
         }
+
+        ctx.font = '16px san-serif';
+        ctx.textAlign = 'center';
+
+        ctx.fillText((x*10), padding+posX, (canHeight-(padding/1.4)), ctx.measureText('100').width);
+
         posX += termX;
       }
       
@@ -88,7 +94,7 @@
 
         ctx.font = '16px san-serif';
         ctx.textAlign = 'center';
-        ctx.fillText(110-((x+1)*10), padding-25, (posY+padding)+8, ctx.measureText('100').width);
+        ctx.fillText(110-((x+1)*10), (padding/1.4), (posY+padding)+8, ctx.measureText('100').width);
 
         posY += termY;
       }
