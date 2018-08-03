@@ -29,13 +29,13 @@
 
   <script>
     var data = [
-      {name: '연필', value: "3", color: '#e1e1e1'},
-      {name: '만년펜', value: "10", color: 'brown'},
+      {name: '연필', value: "0", color: '#e1e1e1'},
+      {name: '만년펜', value: "3", color: 'brown'},
       {name: '만년펜', value: "50", color: 'green'},
       {name: '만년펜', value: "10", color: 'orange'},
-      {name: '만년펜', value: "90", color: 'gold'},
-      {name: '만년펜', value: "20", color: 'blue'},
-      {name: '만년펜', value: "70", color: '#757575'},
+      {name: '만년펜', value: "70", color: 'gold'},
+      {name: '만년펜', value: "100", color: 'blue'},
+      {name: '만년펜', value: "99", color: '#757575'},
       {name: '뭉게구름', value: "20", color: '#f2dd93'},
     ]
   </script>
@@ -45,23 +45,23 @@
     var ctx = can.getContext("2d"); // 컨텍스트 생성
     var canWidth = can.width;
     var canHeight = can.height;
-    var padding = 80;
-
-
+    var PADDING = 80;
+    var VERTICAL_TERM = 10;
+    
     ctx.translate(ctx.measureText('100').width, 0); //왼쪽텍스트 추가로 인해 가운데로 위치 재조절
     
     var baseLine = function () {
       ctx.beginPath();
-      ctx.moveTo(padding, padding);
-      ctx.lineTo(padding, canHeight-padding);
-      ctx.lineTo(canWidth-padding, canHeight-padding);
+      ctx.moveTo(PADDING, PADDING);
+      ctx.lineTo(PADDING, canHeight-PADDING);
+      ctx.lineTo(canWidth-PADDING, canHeight-PADDING);
       ctx.stroke();
       ctx.closePath();
     }
 
     var backLine = function () {
-      var width = canWidth - (padding*2);
-      var height = canHeight - (padding*2);
+      var width = canWidth - (PADDING*2);
+      var height = canHeight - (PADDING*2);
 
       var termX = parseInt(width / (data.length-1), 10);
       var termY = parseInt(height / 10, 10)
@@ -73,28 +73,28 @@
       //가로축
       for(var x=0 ; x<data.length ; x++){
         if(x>0){
-          ctx.moveTo(padding+posX, padding);
-          ctx.lineTo(padding+posX, canHeight-padding);
+          ctx.moveTo(PADDING+posX, PADDING);
+          ctx.lineTo(PADDING+posX, canHeight-PADDING);
         }
 
         ctx.font = '16px san-serif';
         ctx.textAlign = 'center';
 
-        ctx.fillText((x*10), padding+posX, (canHeight-(padding/1.4)), ctx.measureText('100').width);
+        ctx.fillText((x*10), PADDING+posX, (canHeight-(PADDING/1.4)), ctx.measureText('100').width);
 
         posX += termX;
       }
       
       //세로축
-      for(var x=0 ; x<11 ; x++){
+      for(var x=0 ; x<VERTICAL_TERM+1 ; x++){
         if(x<10){
-          ctx.moveTo(padding, posY+padding);
-          ctx.lineTo(canWidth-padding, posY+padding);
+          ctx.moveTo(PADDING, posY+PADDING);
+          ctx.lineTo(canWidth-PADDING, posY+PADDING);
         }
 
         ctx.font = '16px san-serif';
         ctx.textAlign = 'center';
-        ctx.fillText(110-((x+1)*10), (padding/1.4), (posY+padding)+8, ctx.measureText('100').width);
+        ctx.fillText((VERTICAL_TERM*10)-(x*10), (PADDING/1.4), (posY+PADDING)+8, ctx.measureText('100').width);
 
         posY += termY;
       }
@@ -106,26 +106,27 @@
     var addDot = function () {
       ctx.restore();
 
-      var width = canWidth - (padding*2);
-      var height = canHeight - (padding*2);
+      var width = canWidth - (PADDING*2);
+      var height = canHeight - (PADDING*2);
       var posX = 0, posY = 0;
       var termX = parseInt(width / (data.length-1), 10);
       var termY = parseInt(height / 10, 10);
       var linePos = [];      
 
       for(var x=0 ; x<data.length ; x++){
-        var value = parseInt(data[x].value, termY);
-        posY = (height+padding)-(value);
+        var value = parseInt(data[x].value, 10);
+        value *= termY/VERTICAL_TERM;
+        posY = (height+PADDING)-(value);
 
-        linePos.push({x: padding+posX, y: posY});
-        
+
         ctx.beginPath();
-        ctx.arc(padding+posX, posY, 6, (Math.PI/180)*0, (Math.PI/180)*360);
+        ctx.arc(PADDING+posX, posY, 6, (Math.PI/180)*0, (Math.PI/180)*360);
         ctx.fillStyle = data[x].color;
         ctx.fill();
         ctx.closePath();
         ctx.stroke();
         
+        linePos.push({x: PADDING+posX, y: posY});
         posX += termX;
       }
 
@@ -140,10 +141,6 @@
           ctx.closePath();
         }catch(e){}
       }
-
-      
-
-
     }
 
     baseLine();
