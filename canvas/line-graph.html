@@ -35,7 +35,8 @@
       {name: '만년펜', value: "10", color: 'orange'},
       {name: '만년펜', value: "90", color: 'gold'},
       {name: '만년펜', value: "20", color: 'blue'},
-      {name: '만년펜', value: "70", color: '#757575'}
+      {name: '만년펜', value: "70", color: '#757575'},
+      {name: '뭉게구름', value: "20", color: '#f2dd93'},
     ]
   </script>
 
@@ -46,6 +47,9 @@
     var canHeight = can.height;
     var padding = 80;
 
+
+    ctx.translate(ctx.measureText('100').width, 0); //왼쪽텍스트 추가로 인해 가운데로 위치 재조절
+    
     var baseLine = function () {
       ctx.beginPath();
       ctx.moveTo(padding, padding);
@@ -56,60 +60,82 @@
     }
 
     var backLine = function () {
-      var width = canWidth - (padding);
+      var width = canWidth - (padding*2);
       var height = canHeight - (padding*2);
 
-      var termX = parseInt(width / data.length, 10);
+      var termX = parseInt(width / (data.length-1), 10);
       var termY = parseInt(height / 10, 10)
       ctx.save();
       ctx.beginPath();
-      ctx.setLineDash([5, 15]);
+      ctx.setLineDash([5, 5]);
 
       var posX = 0, posY = 0;
+      //가로축
       for(var x=0 ; x<data.length ; x++){
-        ctx.moveTo(padding+posX, padding);
-        ctx.lineTo(padding+posX, canHeight-padding);
+        if(x>0){
+          ctx.moveTo(padding+posX, padding);
+          ctx.lineTo(padding+posX, canHeight-padding);
+        }
         posX += termX;
       }
-      for(var x=0 ; x<10 ; x++){
-        ctx.moveTo(padding, posY+padding);
-        ctx.lineTo(canWidth-padding, posY+padding);
+      
+      //세로축
+      for(var x=0 ; x<11 ; x++){
+        if(x<10){
+          ctx.moveTo(padding, posY+padding);
+          ctx.lineTo(canWidth-padding, posY+padding);
+        }
+
+        ctx.font = '16px san-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(110-((x+1)*10), padding-25, (posY+padding)+8, ctx.measureText('100').width);
+
         posY += termY;
       }
       ctx.stroke()
       ctx.closePath();
-    }
+    }        
 
+    //포인트 원 그리기
     var addDot = function () {
       ctx.restore();
 
-
-      var width = canWidth - (padding);
+      var width = canWidth - (padding*2);
       var height = canHeight - (padding*2);
       var posX = 0, posY = 0;
-      var termX = parseInt(width / data.length, 10);
-      var termY = parseInt(height / 10, 10)
-
-      var beforeX = 0, beforeY = 0;
+      var termX = parseInt(width / (data.length-1), 10);
+      var termY = parseInt(height / 10, 10);
+      var linePos = [];      
 
       for(var x=0 ; x<data.length ; x++){
         var value = parseInt(data[x].value, termY);
         posY = (height+padding)-(value);
+
+        linePos.push({x: padding+posX, y: posY});
+        
         ctx.beginPath();
-        ctx.arc(padding+posX, posY, 4, (Math.PI/180)*0, (Math.PI/180)*360);
+        ctx.arc(padding+posX, posY, 6, (Math.PI/180)*0, (Math.PI/180)*360);
+        ctx.fillStyle = data[x].color;
         ctx.fill();
         ctx.closePath();
         ctx.stroke();
-
-        ctx.beginPath();
-        ctx.moveTo(padding+posX, beforeY);
-        ctx.lineTo(padding+posX, posY);
-        ctx.closePath();
-        ctx.stroke();
-
+        
         posX += termX;
-
       }
+
+      for(var x=0 ; x<linePos.length ; x++){
+        try{
+          ctx.beginPath();
+          ctx.moveTo(linePos[x].x, linePos[x].y);
+          ctx.lineTo(linePos[x+1].x, linePos[x+1].y);
+          ctx.strokeStyle = data[x].color;
+          ctx.lineWidth = 2;
+          ctx.stroke();
+          ctx.closePath();
+        }catch(e){}
+      }
+
+      
 
 
     }
