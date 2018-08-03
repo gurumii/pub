@@ -30,12 +30,12 @@
   <script>
     var data = [
       {name: '연필', value: "25", color: '#e1e1e1'},
-      {name: '만년펜', value: "30", color: 'brown'},
-      {name: '만년펜', value: "30", color: 'green'},
-      {name: '만년펜', value: "30", color: 'orange'},
-      {name: '만년펜', value: "30", color: 'gold'},
-      {name: '만년펜', value: "30", color: 'blue'},
-      {name: '만년펜', value: "30", color: '#757575'}
+      {name: '만년펜1', value: "30", color: 'brown'},
+      {name: '만년펜2', value: "30", color: 'green'},
+      {name: '만년펜3', value: "30", color: 'orange'},
+      {name: '만년펜4', value: "30", color: 'gold'},
+      {name: '만년펜5', value: "30", color: 'blue'},
+      {name: '만년펜6', value: "30", color: '#757575'}
     ]
   </script>
 
@@ -79,6 +79,8 @@
       ctx.textBaseline = 'middle';
       ctx.textalign = 'center';
       ctx.fillStyle = '#000';
+
+      console.log((nowRadius+prevRadius)/2, text);
 
       if((nowRadius+prevRadius)/2 < 90){
   			distanceX = 5;

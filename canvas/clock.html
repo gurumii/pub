@@ -96,48 +96,15 @@
       for(var x=0 ; x<12 ; x++){
         var temp = ((Math.PI/180)*270);
         temp += (Math.PI/180)*(x*(60/2));
-        var deg = Math.floor(x/3);
+        var deg = x;
+        
 
         ctx.textBaseline = 'middle';
-        ctx.textalign = 'left';
+        ctx.textalign = 'center';
 
-
-        if(deg==0){
-          distanceX = 6;
-          distanceY = 6;
-          ctx.textAlign = 'left';
-        }else if(deg==1){
-          distanceX = -6;
-          distanceY = 6;
-          ctx.textAlign = 'right';
-        }else if(deg==2){
-          distanceX = -6;
-          distanceY = -6;
-          ctx.textAlign = 'right';
-        }else{
-          distanceX = 6;
-          distanceY = -6;
-          ctx.textAlign = 'left';
+        if(deg == 0 || deg>=6){
+          distanceX = -4;
         }
-
-        /*if((nowRadius+prevRadius)/2 < 90){
-          distanceX = 5;
-          distanceY = 5;
-          ctx.textAlign = 'left';
-        } else if ((nowRadius+prevRadius)/2 < 180){
-          distanceX = -5;
-          distanceY = 5;
-          ctx.textAlign = 'right';
-        } else if ((nowRadius+prevRadius)/2 < 270){
-          distanceX = -5;
-          distanceY = -5;
-          ctx.textAlign = 'right';
-        } else {
-          distanceX = 5;
-          distanceY = -5;
-          ctx.textAlign = 'left';
-        }*/
-
         var _centerX = (centerX+distanceX) + ((Math.cos(temp))*radius);
         var _centerY = (centerY+distanceY) + ((Math.sin(temp))*radius);
         ctx.fillText(
@@ -158,9 +125,9 @@
     }
     run();
     
-    /*var timer = setInterval(function () {
+    var timer = setInterval(function () {
       run();
-    }, 500);//*/
+    }, 1000);//*/
 
   </script>
 </body>
